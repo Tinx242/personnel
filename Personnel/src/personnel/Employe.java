@@ -1,6 +1,7 @@
 package personnel;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  * Employé d'une ligue hébergée par la M2L. Certains peuvent 
@@ -16,8 +17,11 @@ public class Employe implements Serializable, Comparable<Employe>
 	private String nom, prenom, password, mail;
 	private Ligue ligue;
 	private GestionPersonnel gestionPersonnel;
+	private LocalDate dateArrivee;
+	private LocalDate dateDepart;
 	
-	Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom, String mail, String password)
+	public Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom, 
+			String mail, String password, LocalDate dateArrivee, LocalDate dateDepart)
 	{
 		this.gestionPersonnel = gestionPersonnel;
 		this.nom = nom;
@@ -25,6 +29,15 @@ public class Employe implements Serializable, Comparable<Employe>
 		this.password = password;
 		this.mail = mail;
 		this.ligue = ligue;
+		
+		// Validation des dates
+		if (dateArrivee != null && dateDepart != null && dateDepart.isBefore(dateArrivee))
+		{
+			throw new ExceptionsEmploye.DatesIncoherentes();
+		}
+		
+		this.dateArrivee = dateArrivee;
+		this.dateDepart = dateDepart;
 	}
 	
 	/**
@@ -131,17 +144,45 @@ public class Employe implements Serializable, Comparable<Employe>
 	
 	public void setPassword(String password)
 	{
-		this.password= password;
+		this.password = password;
 	}
 
-	/**
-	 * Retourne la ligue à laquelle l'employé est affecté.
-	 * @return la ligue à laquelle l'employé est affecté.
-	 */
 	
 	public Ligue getLigue()
 	{
 		return ligue;
+	}
+	
+	
+	public LocalDate getDateArrivee()
+	{
+		return dateArrivee;
+	}
+	
+	
+	public void setDateArrivee(LocalDate dateArrivee)
+	{
+		if (dateArrivee != null && this.dateDepart != null && this.dateDepart.isBefore(dateArrivee))
+		{
+			throw new ExceptionsEmploye.DatesIncoherentes();
+		}
+		this.dateArrivee = dateArrivee;
+	}
+	
+	
+	public LocalDate getDateDepart()
+	{
+		return dateDepart;
+	}
+	
+	
+	public void setDateDepart(LocalDate dateDepart)
+	{
+		if (this.dateArrivee != null && dateDepart != null && dateDepart.isBefore(this.dateArrivee))
+		{
+			throw new ExceptionsEmploye.DatesIncoherentes();
+		}
+		this.dateDepart = dateDepart;
 	}
 
 	/**
