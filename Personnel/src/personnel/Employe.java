@@ -4,222 +4,220 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
- * Employé d'une ligue hébergée par la M2L. Certains peuvent 
+ * Employé d'une ligue hébergée par la M2L. Certains peuvent
  * être administrateurs des employés de leur ligue.
  * Un seul employé, rattaché à aucune ligue, est le root.
- * Il est impossible d'instancier directement un employé, 
- * il faut passer la méthode {@link Ligue#addEmploye addEmploye}.
+ * Il est impossible d'instancier directement un employé,
+ * il faut passer par la méthode {@link Ligue#addEmploye addEmploye}.
  */
+public class Employe implements Serializable, Comparable<Employe> {
+    private static final long serialVersionUID = 4795721718037994734L;
+    private String nom, prenom, password, mail;
+    private Ligue ligue;
+    private GestionPersonnel gestionPersonnel;
+    private LocalDate dateArrivee;
+    private LocalDate dateDepart;
 
-public class Employe implements Serializable, Comparable<Employe>
-{
-	private static final long serialVersionUID = 4795721718037994734L;
-	private String nom, prenom, password, mail;
-	private Ligue ligue;
-	private GestionPersonnel gestionPersonnel;
-	private LocalDate dateArrivee;
-	private LocalDate dateDepart;
-	
-	public Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom, 
-			String mail, String password, LocalDate dateArrivee, LocalDate dateDepart)
-	{
-		this.gestionPersonnel = gestionPersonnel;
-		this.nom = nom;
-		this.prenom = prenom;
-		this.password = password;
-		this.mail = mail;
-		this.ligue = ligue;
-		
-		// Validation des dates
-		if (dateArrivee != null && dateDepart != null && dateDepart.isBefore(dateArrivee))
-		{
-			throw new ExceptionsEmploye.DatesIncoherentes();
-		}
-		
-		this.dateArrivee = dateArrivee;
-		this.dateDepart = dateDepart;
-	}
-	
-	/**
-	 * Retourne vrai ssi l'employé est administrateur de la ligue 
-	 * passée en paramètre.
-	 * @return vrai ssi l'employé est administrateur de la ligue 
-	 * passée en paramètre.
-	 * @param ligue la ligue pour laquelle on souhaite vérifier si this 
-	 * est l'admininstrateur.
-	 */
-	
-	public boolean estAdmin(Ligue ligue)
-	{
-		return ligue.getAdministrateur() == this;
-	}
-	
-	/**
-	 * Retourne vrai ssi l'employé est le root.
-	 * @return vrai ssi l'employé est le root.
-	 */
-	
-	public boolean estRoot()
-	{
-		return gestionPersonnel.getRoot() == this;
-	}
-	
-	/**
-	 * Retourne le nom de l'employé.
-	 * @return le nom de l'employé. 
-	 */
-	
-	public String getNom()
-	{
-		return nom;
-	}
+    public class DatesIncoherentesException extends RuntimeException {
+        public DatesIncoherentesException(String message) {
+            super(message);
+        }
+    }
 
-	/**
-	 * Change le nom de l'employé.
-	 * @param nom le nouveau nom.
-	 */
-	
-	public void setNom(String nom)
-	{
-		this.nom = nom;
-	}
+    Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom,
+            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart) {
+        this.gestionPersonnel = gestionPersonnel;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.password = password;
+        this.mail = mail;
+        this.ligue = ligue;
 
-	/**
-	 * Retourne le prénom de l'employé.
-	 * @return le prénom de l'employé.
-	 */
-	
-	public String getPrenom()
-	{
-		return prenom;
-	}
-	
-	/**
-	 * Change le prénom de l'employé.
-	 * @param prenom le nouveau prénom de l'employé. 
-	 */
+        validerDates(dateArrivee, dateDepart);
 
-	public void setPrenom(String prenom)
-	{
-		this.prenom = prenom;
-	}
+        this.dateArrivee = dateArrivee;
+        this.dateDepart = dateDepart;
+    }
 
-	/**
-	 * Retourne le mail de l'employé.
-	 * @return le mail de l'employé.
-	 */
-	
-	public String getMail()
-	{
-		return mail;
-	}
-	
-	/**
-	 * Change le mail de l'employé.
-	 * @param mail le nouveau mail de l'employé.
-	 */
+    /**
+     * Valide que les dates d'arrivée et de départ sont cohérentes.
+     * @param dateArrivee La date d'arrivée.
+     * @param dateDepart La date de départ.
+     * @throws DatesIncoherentesException Si les dates sont incohérentes.
+     */
+    private void validerDates(LocalDate dateArrivee, LocalDate dateDepart) {
+        if (dateArrivee != null && dateDepart != null && dateDepart.isBefore(dateArrivee)) {
+            throw new DatesIncoherentesException("La date de départ ne peut pas être antérieure à la date d'arrivée.");
+        }
+    }
 
-	public void setMail(String mail)
-	{
-		this.mail = mail;
-	}
+    /**
+     * Retourne vrai si l'employé est administrateur de la ligue
+     * passée en paramètre.
+     * @param ligue La ligue pour laquelle vérifier si l'employé est administrateur.
+     * @return Vrai si l'employé est administrateur de la ligue.
+     */
+    public boolean estAdmin(Ligue ligue) {
+        return ligue.getAdministrateur() == this;
+    }
 
-	/**
-	 * Retourne vrai ssi le password passé en paramètre est bien celui
-	 * de l'employé.
-	 * @return vrai ssi le password passé en paramètre est bien celui
-	 * de l'employé.
-	 * @param password le password auquel comparer celui de l'employé.
-	 */
-	
-	public boolean checkPassword(String password)
-	{
-		return this.password.equals(password);
-	}
+    /**
+     * Retourne vrai si l'employé est le root.
+     * @return Vrai si l'employé est le root.
+     */
+    public boolean estRoot() {
+        return gestionPersonnel.getRoot() == this;
+    }
 
-	/**
-	 * Change le password de l'employé.
-	 * @param password le nouveau password de l'employé. 
-	 */
-	
-	public void setPassword(String password)
-	{
-		this.password = password;
-	}
+    /**
+     * Retourne le nom de l'employé.
+     * @return Le nom de l'employé.
+     */
+    public String getNom() {
+        return nom;
+    }
 
-	
-	public Ligue getLigue()
-	{
-		return ligue;
-	}
-	
-	
-	public LocalDate getDateArrivee()
-	{
-		return dateArrivee;
-	}
-	
-	
-	public void setDateArrivee(LocalDate dateArrivee)
-	{
-		if (dateArrivee != null && this.dateDepart != null && this.dateDepart.isBefore(dateArrivee))
-		{
-			throw new ExceptionsEmploye.DatesIncoherentes();
-		}
-		this.dateArrivee = dateArrivee;
-	}
-	
-	
-	public LocalDate getDateDepart()
-	{
-		return dateDepart;
-	}
-	
-	
-	public void setDateDepart(LocalDate dateDepart)
-	{
-		if (this.dateArrivee != null && dateDepart != null && dateDepart.isBefore(this.dateArrivee))
-		{
-			throw new ExceptionsEmploye.DatesIncoherentes();
-		}
-		this.dateDepart = dateDepart;
-	}
+    /**
+     * Change le nom de l'employé.
+     * @param nom Le nouveau nom.
+     */
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-	/**
-	 * Supprime l'employé. Si celui-ci est un administrateur, le root
-	 * récupère les droits d'administration sur sa ligue.
-	 */
-	
-	public void remove()
-	{
-		Employe root = gestionPersonnel.getRoot();
-		if (this != root)
-		{
-			if (estAdmin(getLigue()))
-				getLigue().setAdministrateur(root);
-			getLigue().remove(this);
-		}
-		else
-			throw new ImpossibleDeSupprimerRoot();
-	}
+    /**
+     * Retourne le prénom de l'employé.
+     * @return Le prénom de l'employé.
+     */
+    public String getPrenom() {
+        return prenom;
+    }
 
-	@Override
-	public int compareTo(Employe autre)
-	{
-		int cmp = getNom().compareTo(autre.getNom());
-		if (cmp != 0)
-			return cmp;
-		return getPrenom().compareTo(autre.getPrenom());
-	}
-	
-	@Override
-	public String toString()
-	{
-		String res = nom + " " + prenom + " " + mail + " (";
-		if (estRoot())
-			res += "super-utilisateur";
-		else
-			res += ligue.toString();
-		return res + ")";
-	}
+    /**
+     * Change le prénom de l'employé.
+     * @param prenom Le nouveau prénom de l'employé.
+     */
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    /**
+     * Retourne le mail de l'employé.
+     * @return Le mail de l'employé.
+     */
+    public String getMail() {
+        return mail;
+    }
+
+    /**
+     * Change le mail de l'employé.
+     * @param mail Le nouveau mail de l'employé.
+     */
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    /**
+     * Retourne vrai si le mot de passe passé en paramètre est celui de l'employé.
+     * @param password Le mot de passe à comparer.
+     * @return Vrai si le mot de passe est correct.
+     */
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    /**
+     * Change le mot de passe de l'employé.
+     * @param password Le nouveau mot de passe.
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * Retourne la ligue à laquelle l'employé est affecté.
+     * @return La ligue de l'employé.
+     */
+    public Ligue getLigue() {
+        return ligue;
+    }
+
+    /**
+     * Retourne la date d'arrivée de l'employé.
+     * @return La date d'arrivée.
+     */
+    public LocalDate getDateArrivee() {
+        return dateArrivee;
+    }
+
+    /**
+     * Change la date d'arrivée de l'employé.
+     * @param dateArrivee La nouvelle date d'arrivée.
+     * @throws DatesIncoherentesException Si la date est incohérente.
+     */
+    public void setDateArrivee(LocalDate dateArrivee) {
+        validerDates(dateArrivee, this.dateDepart);
+        this.dateArrivee = dateArrivee;
+    }
+
+    /**
+     * Retourne la date de départ de l'employé.
+     * @return La date de départ.
+     */
+    public LocalDate getDateDepart() {
+        return dateDepart;
+    }
+
+    /**
+     * Change la date de départ de l'employé.
+     * @param dateDepart La nouvelle date de départ.
+     * @throws DatesIncoherentesException Si la date est incohérente.
+     */
+    public void setDateDepart(LocalDate dateDepart) {
+        validerDates(this.dateArrivee, dateDepart);
+        this.dateDepart = dateDepart;
+    }
+
+    /**
+     * Supprime l'employé. Si celui-ci est administrateur, le root
+     * récupère les droits d'administration sur sa ligue.
+     * @throws ImpossibleDeSupprimerRoot Si l'employé est le root.
+     */
+    public void remove() {
+        Employe root = gestionPersonnel.getRoot();
+        if (this != root) {
+            if (estAdmin(getLigue())) {
+                getLigue().setAdministrateur(root);
+            }
+            getLigue().remove(this);
+        } else {
+            throw new ImpossibleDeSupprimerRoot();
+        }
+    }
+
+    @Override
+    public int compareTo(Employe autre) {
+        int cmp = getNom().compareTo(autre.getNom());
+        if (cmp != 0) {
+            return cmp;
+        }
+        return getPrenom().compareTo(autre.getPrenom());
+    }
+
+    @Override
+    public String toString() {
+        String res = nom + " " + prenom + " " + mail + " (";
+        if (estRoot()) {
+            res += "super-utilisateur";
+        } else {
+            res += ligue.toString();
+        }
+        return res + ")";
+    }
+
+    public class ImpossibleDeSupprimerRoot extends RuntimeException {
+        public ImpossibleDeSupprimerRoot() {
+            super("Il est impossible de supprimer le root.");
+        }
+    }
 }
