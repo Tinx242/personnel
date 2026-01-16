@@ -141,38 +141,25 @@ public class Employe implements Serializable, Comparable<Employe> {
     public Ligue getLigue() {
         return ligue;
     }
-
-    /**
-     * Retourne la date d'arrivée de l'employé.
-     * @return La date d'arrivée.
-     */
+    
+    
     public LocalDate getDateArrivee() {
         return dateArrivee;
     }
-
-    /**
-     * Change la date d'arrivée de l'employé.
-     * @param dateArrivee La nouvelle date d'arrivée.
-     * @throws DatesIncoherentesException Si la date est incohérente.
-     */
+    
+    
     public void setDateArrivee(LocalDate dateArrivee) {
         validerDates(dateArrivee, this.dateDepart);
         this.dateArrivee = dateArrivee;
     }
 
-    /**
-     * Retourne la date de départ de l'employé.
-     * @return La date de départ.
-     */
+    
+    
     public LocalDate getDateDepart() {
         return dateDepart;
     }
-
-    /**
-     * Change la date de départ de l'employé.
-     * @param dateDepart La nouvelle date de départ.
-     * @throws DatesIncoherentesException Si la date est incohérente.
-     */
+    
+    
     public void setDateDepart(LocalDate dateDepart) {
         validerDates(this.dateArrivee, dateDepart);
         this.dateDepart = dateDepart;
