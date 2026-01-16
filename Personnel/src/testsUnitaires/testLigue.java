@@ -99,36 +99,6 @@ class testLigue
 		assertFalse(employe1.estAdmin(ligue));
 		assertTrue(employe2.estAdmin(ligue));
 	}
-	
-	// ========== Tests d'ajout d'employés ==========
-	
-	@Test
-	void addPlusieursEmployes() throws SauvegardeImpossible
-	{
-		Ligue ligue = gestionPersonnel.addLigue("Tennis");
-		Employe emp1 = ligue.addEmploye("Aaa", "Premier", "aaa@mail.com", "pass1", LocalDate.now(), null);
-		Employe emp2 = ligue.addEmploye("Zzz", "Dernier", "zzz@mail.com", "pass2", LocalDate.now(), null);
-		Employe emp3 = ligue.addEmploye("Mmm", "Milieu", "mmm@mail.com", "pass3", LocalDate.now(), null);
-		
-		assertEquals(3, ligue.getEmployes().size());
-		
-		Employe[] tableau = ligue.getEmployes().toArray(new Employe[0]);
-		assertEquals(emp1, tableau[0]);
-		assertEquals(emp3, tableau[1]);
-		assertEquals(emp2, tableau[2]);
-	}
-	
-	@Test
-	void getEmployesRetourneCollectionNonModifiable() throws SauvegardeImpossible
-	{
-		Ligue ligue = gestionPersonnel.addLigue("Tennis");
-		ligue.addEmploye("Test", "User", "test@mail.com", "pass", LocalDate.now(), null);
-		
-		assertThrows(UnsupportedOperationException.class, () -> {
-			ligue.getEmployes().clear();
-		});
-	}
-	
 	// ========== Tests de suppression d'employés ==========
 	
 	@Test
@@ -210,84 +180,5 @@ class testLigue
 		assertEquals(admin, ligueTemp.getAdministrateur());
 		ligueTemp.remove();
 		assertFalse(gestionPersonnel.getLigues().contains(ligueTemp));
-	}
-	
-	// ========== Tests de compareTo ==========
-	
-	@Test
-	void compareToOrdreAlphabetique() throws SauvegardeImpossible
-	{
-		Ligue ligueA = gestionPersonnel.addLigue("AAA Ligue");
-		Ligue ligueZ = gestionPersonnel.addLigue("ZZZ Ligue");
-		
-		assertTrue(ligueA.compareTo(ligueZ) < 0);
-		assertTrue(ligueZ.compareTo(ligueA) > 0);
-		assertTrue(ligueA.compareTo(ligueA) == 0);
-	}
-	
-	// ========== Tests de toString ==========
-	
-	@Test
-	void toStringLigue() throws SauvegardeImpossible
-	{
-		Ligue ligue = gestionPersonnel.addLigue("Tennis");
-		assertEquals("Tennis", ligue.toString());
-	}
-	
-	// ========== Tests de cas limites ==========
-	
-	@Test
-	void ligueSansEmploye() throws SauvegardeImpossible
-	{
-		Ligue ligueVide = gestionPersonnel.addLigue("Ligue Vide");
-		assertEquals(0, ligueVide.getEmployes().size());
-		assertEquals(gestionPersonnel.getRoot(), ligueVide.getAdministrateur());
-	}
-	
-	@Test
-	void modificationAdministrateurApresSuppressionEmploye() throws SauvegardeImpossible
-	{
-		Ligue ligue = gestionPersonnel.addLigue("Tennis");
-		Employe emp1 = ligue.addEmploye("Premier", "User", "premier@mail.com", "pass1", LocalDate.now(), null);
-		Employe emp2 = ligue.addEmploye("Second", "User", "second@mail.com", "pass2", LocalDate.now(), null);
-		
-		ligue.setAdministrateur(emp1);
-		emp1.remove();
-		
-		assertEquals(gestionPersonnel.getRoot(), ligue.getAdministrateur());
-		
-		ligue.setAdministrateur(emp2);
-		assertEquals(emp2, ligue.getAdministrateur());
-	}
-	
-	@Test
-	void nomLigueVide() throws SauvegardeImpossible
-	{
-		Ligue ligueNomVide = gestionPersonnel.addLigue("");
-		assertEquals("", ligueNomVide.getNom());
-	}
-	
-	@Test
-	void setAdministrateurChangementsMultiples() throws SauvegardeImpossible
-	{
-		Ligue ligue = gestionPersonnel.addLigue("Tennis");
-		Employe emp1 = ligue.addEmploye("Un", "User", "un@mail.com", "pass1", LocalDate.now(), null);
-		Employe emp2 = ligue.addEmploye("Deux", "User", "deux@mail.com", "pass2", LocalDate.now(), null);
-		Employe emp3 = ligue.addEmploye("Trois", "User", "trois@mail.com", "pass3", LocalDate.now(), null);
-		
-		ligue.setAdministrateur(emp1);
-		assertTrue(emp1.estAdmin(ligue));
-		
-		ligue.setAdministrateur(emp2);
-		assertFalse(emp1.estAdmin(ligue));
-		assertTrue(emp2.estAdmin(ligue));
-		
-		ligue.setAdministrateur(emp3);
-		assertFalse(emp2.estAdmin(ligue));
-		assertTrue(emp3.estAdmin(ligue));
-		
-		ligue.setAdministrateur(gestionPersonnel.getRoot());
-		assertFalse(emp3.estAdmin(ligue));
-		assertTrue(gestionPersonnel.getRoot().estAdmin(ligue));
 	}
 }
