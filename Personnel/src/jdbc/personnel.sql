@@ -2,8 +2,8 @@ CREATE DATABASE personnel;
 
 USE personnel;
 
-CREATE TABLE Employee (
-    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+CREATE TABLE Employe ( 
+    num_employe INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nom VARCHAR(156),
     prenom VARCHAR(156),
     mail VARCHAR(156),
@@ -14,6 +14,6 @@ CREATE TABLE Employee (
 );
 
 CREATE TABLE Ligue (
-    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    num_ligue INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nom VARCHAR(156)
 );
