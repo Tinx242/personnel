@@ -97,9 +97,14 @@ public class LigueConsole
 		return new Option("ajouter un employé", "a",
 				() -> 
 				{
-					ligue.addEmploye(getString("nom : "), 
-						getString("prenom : "), getString("mail : "), 
-						getString("password : "), null, null);
+					try {
+						ligue.addEmploye(getString("nom : "), 
+							getString("prenom : "), getString("mail : "), 
+							getString("password : "), null, null);
+					} catch (DatesIncoherentesException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 		);
 	}

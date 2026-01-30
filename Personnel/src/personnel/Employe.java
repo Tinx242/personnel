@@ -18,23 +18,18 @@ public class Employe implements Serializable, Comparable<Employe> {
     private LocalDate dateArrivee;
     private LocalDate dateDepart;
 
-    public class DatesIncoherentesException extends RuntimeException {
-        public DatesIncoherentesException(String message) {
-            super(message);
-        }
-    }
-
     Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom,
-            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart) {
+            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart) 
+            throws DatesIncoherentesException {
         this.gestionPersonnel = gestionPersonnel;
         this.nom = nom;
         this.prenom = prenom;
         this.password = password;
         this.mail = mail;
         this.ligue = ligue;
-
+        
         validerDates(dateArrivee, dateDepart);
-
+        
         this.dateArrivee = dateArrivee;
         this.dateDepart = dateDepart;
     }
@@ -45,7 +40,7 @@ public class Employe implements Serializable, Comparable<Employe> {
      * @param dateDepart La date de départ.
      * @throws DatesIncoherentesException Si les dates sont incohérentes.
      */
-    private void validerDates(LocalDate dateArrivee, LocalDate dateDepart) {
+    private void validerDates(LocalDate dateArrivee, LocalDate dateDepart) throws DatesIncoherentesException {
         if (dateArrivee != null && dateDepart != null && dateDepart.isBefore(dateArrivee)) {
             throw new DatesIncoherentesException("La date de départ ne peut pas être antérieure à la date d'arrivée.");
         }
@@ -148,7 +143,7 @@ public class Employe implements Serializable, Comparable<Employe> {
     }
     
     
-    public void setDateArrivee(LocalDate dateArrivee) {
+    public void setDateArrivee(LocalDate dateArrivee) throws DatesIncoherentesException {
         validerDates(dateArrivee, this.dateDepart);
         this.dateArrivee = dateArrivee;
     }
@@ -160,7 +155,7 @@ public class Employe implements Serializable, Comparable<Employe> {
     }
     
     
-    public void setDateDepart(LocalDate dateDepart) {
+    public void setDateDepart(LocalDate dateDepart) throws DatesIncoherentesException {
         validerDates(this.dateArrivee, dateDepart);
         this.dateDepart = dateDepart;
     }

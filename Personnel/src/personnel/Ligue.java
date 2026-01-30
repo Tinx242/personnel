@@ -1,6 +1,7 @@
 package personnel;
 
 import java.io.Serializable;
+
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.SortedSet;
@@ -107,9 +108,10 @@ public class Ligue implements Serializable, Comparable<Ligue>
 	 * @param mail l'adresse mail de l'employé.
 	 * @param password le password de l'employé.
 	 * @return l'employé créé. 
+	 * @throws DatesIncoherentesException 
 	 */
 
-	public Employe addEmploye(String nom, String prenom, String mail, String password,LocalDate dateArrivee, LocalDate dateDepart)
+	public Employe addEmploye(String nom, String prenom, String mail, String password,LocalDate dateArrivee, LocalDate dateDepart) throws DatesIncoherentesException
 	{
 		Employe employe = new Employe(this.gestionPersonnel, this, nom, prenom, mail, password, dateArrivee, dateDepart);
 		employes.add(employe);
