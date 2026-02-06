@@ -26,6 +26,7 @@ public class EmployeConsole
 			menu.add(changerNom(employe));
 			menu.add(changerPrenom(employe));
 			menu.add(changerMail(employe));
+			menu.add(changerAdministrateur(employe));
 			menu.add(changerPassword(employe));
 			menu.addBack("q");
 			return menu;
@@ -51,6 +52,18 @@ public class EmployeConsole
 	private Option changerPassword(final Employe employe)
 	{
 		return new Option("Changer le password", "x", () -> {employe.setPassword(getString("Nouveau password : "));});
+	}
+	
+	private Option changerAdministrateur(final Employe employe)
+	{
+		return new Option("Définir comme administrateur", "a", 
+				() -> 
+				{
+					employe.getLigue().setAdministrateur(employe);
+					System.out.println(employe.getNom() + " " + employe.getPrenom() + 
+							" est maintenant l'administrateur de " + employe.getLigue().getNom());
+				}
+		);
 	}
 	
 
