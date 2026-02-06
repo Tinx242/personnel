@@ -1,6 +1,5 @@
 CREATE DATABASE personnel;
 
-USE personnel;
 
 CREATE TABLE Ligue (
     num_ligue INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -18,6 +17,6 @@ CREATE TABLE Employe (
     date_depart DATE,
     num_ligue INT,
     FOREIGN KEY (num_ligue) REFERENCES Ligue(num_ligue)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE
+        ON DELETE CASCADE
+     
 );
