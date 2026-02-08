@@ -2,6 +2,8 @@ package commandLine;
 
 import static commandLineMenus.rendering.examples.util.InOut.getString;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import commandLineMenus.List;
@@ -20,6 +22,24 @@ public class LigueConsole
 		this.gestionPersonnel = gestionPersonnel;
 		this.employeConsole = employeConsole;
 	}
+	
+	private LocalDate getDate(String prompt)
+    {
+        while (true)
+        {
+            try
+            {
+                String input = getString(prompt + " (format aaaa-mm-jj) : ");
+                if (input.isEmpty())
+                    return null;
+                return LocalDate.parse(input);
+            }
+            catch (DateTimeParseException e)
+            {
+                System.err.println("Format invalide. Utilisez aaaa-mm-jj");
+            }
+        }
+    }	
 
 	Menu menuLigues()
 	{
@@ -92,21 +112,52 @@ public class LigueConsole
 	}
 	
 	private Option ajouterEmploye(final Ligue ligue)
-	{
-		return new Option("ajouter un employé", "a",
-				() -> 
-				{
-					try {
-						ligue.addEmploye(getString("nom : "), 
-							getString("prenom : "), getString("mail : "), 
-							getString("password : "), null, null);
-					} catch (DatesIncoherentesException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-		);
-	}
+    {
+        return new Option("ajouter un employé", "a",
+            () -> 
+            {
+                try 
+                {
+                    String nom = getString("nom : ");
+                    String prenom = getString("prenom : ");
+                    String mail = getString("mail : ");
+                    String password = getString("password : ");
+                    LocalDate dateArrivee;
+                    LocalDate dateDepart;
+                    
+                    while (true)
+                    {
+                        dateArrivee = getDate("Date d'arrivée");
+                        dateDepart = getDate("Date de départ");
+                        
+                        if (dateArrivee == null || dateDepart == null)
+                            break;
+                        
+                        if (dateArrivee.isAfter(dateDepart))
+                        {
+                            System.err.println("ERREUR : La date d'arrivée doit être avant la date de départ.");
+                            System.err.println("Veuillez ressaisir les deux dates.");
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    
+                    ligue.addEmploye(nom, prenom, mail, password, dateArrivee, dateDepart);
+                    
+                    System.out.println("Employé créé avec succès !");
+                    if (dateArrivee != null)
+                        System.out.println("Date d'arrivée : " + dateArrivee);
+                    if (dateDepart != null)
+                        System.out.println("Date de départ : " + dateDepart);
+                } 
+                catch (DatesIncoherentesException e) 
+                {
+                    System.err.println("ERREUR : " + e.getMessage());
+                }
+            });
+    }
 	
 	private Menu gererEmployes(Ligue ligue)
 	{
