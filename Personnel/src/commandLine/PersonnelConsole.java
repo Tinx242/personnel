@@ -73,6 +73,7 @@ public class PersonnelConsole
 	
 	public static void main(String[] args)
 	{
+
 		PersonnelConsole personnelConsole = 
 				new PersonnelConsole(GestionPersonnel.getGestionPersonnel());
 		if (personnelConsole.verifiePassword())
