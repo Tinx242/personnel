@@ -17,6 +17,7 @@ public class Employe implements Serializable, Comparable<Employe> {
     private GestionPersonnel gestionPersonnel;
     private LocalDate dateArrivee;
     private LocalDate dateDepart;
+    private int id;
 
     Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom,
             String mail, String password, LocalDate dateArrivee, LocalDate dateDepart) 
@@ -32,6 +33,13 @@ public class Employe implements Serializable, Comparable<Employe> {
         
         this.dateArrivee = dateArrivee;
         this.dateDepart = dateDepart;
+    }
+    
+    Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom,
+            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart, int id)
+            throws DatesIncoherentesException, SauvegardeImpossible {
+        this(gestionPersonnel, ligue, nom, prenom, mail, password, dateArrivee, dateDepart);
+        this.id = gestionPersonnel.insert(this);
     }
 
     /**
@@ -120,6 +128,10 @@ public class Employe implements Serializable, Comparable<Employe> {
     public boolean checkPassword(String password) {
         return this.password.equals(password);
     }
+    
+    public String getPassword() {
+    	return password;
+    }
 
     /**
      * Change le mot de passe de l'employé.
@@ -135,6 +147,14 @@ public class Employe implements Serializable, Comparable<Employe> {
      */
     public Ligue getLigue() {
         return ligue;
+    }
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     

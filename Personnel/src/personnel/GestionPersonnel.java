@@ -47,12 +47,7 @@ public class GestionPersonnel implements Serializable
 		if (gestionPersonnel != null)
 			throw new RuntimeException("Vous ne pouvez créer qu'une seuls instance de cet objet.");
 		ligues = new TreeSet<>();
-		try {
-			root = new Employe(this, null, "root", "", "", "toor", null, null);
-		} catch (DatesIncoherentesException e) {
-			// Ne devrait jamais arriver car les deux dates sont null
-			throw new AssertionError("Erreur lors de la création du root", e);
-		}
+		root = addRoot("root", "toor");
 		gestionPersonnel = this;
 	}
 	
@@ -99,6 +94,16 @@ public class GestionPersonnel implements Serializable
 		ligues.add(ligue);
 		return ligue;
 	}
+	
+	public Employe addRoot(String nom, String password)
+	{
+	    try {
+	        root = new Employe(this, null, nom, "", "", password, null, null, -1); 
+	    } catch (DatesIncoherentesException | SauvegardeImpossible e) {
+	        throw new AssertionError("Ne devrait jamais arriver car les dates sont null", e);
+	    }
+	    return root;
+	}
 
 	void remove(Ligue ligue)
 	{
@@ -108,6 +113,11 @@ public class GestionPersonnel implements Serializable
 	int insert(Ligue ligue) throws SauvegardeImpossible
 	{
 		return passerelle.insert(ligue);
+	}
+	
+	int insert(Employe employe) throws SauvegardeImpossible
+	{
+	    return passerelle.insert(employe);
 	}
 
 	/**
