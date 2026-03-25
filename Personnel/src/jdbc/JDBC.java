@@ -109,6 +109,24 @@ public class JDBC implements Passerelle
 	}
 	
 	@Override
+	public void update(Ligue ligue) throws SauvegardeImpossible
+	{
+		try
+		{
+			PreparedStatement instruction;
+			instruction = connection.prepareStatement("update ligue set nom = ? where num_ligue = ?");
+			instruction.setString(1, ligue.getNom());
+			instruction.setInt(2, ligue.getId());
+			instruction.executeUpdate();
+		}
+		catch (SQLException exception)
+		{
+			exception.printStackTrace();
+			throw new SauvegardeImpossible(exception);
+		}
+	}
+	
+	@Override
 	public int insert(Employe employe) throws SauvegardeImpossible
 	{
 	    try
