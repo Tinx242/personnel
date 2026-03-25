@@ -33,20 +33,40 @@ public class JDBC implements Passerelle
 	@Override
 	public GestionPersonnel getGestionPersonnel() 
 	{
-		GestionPersonnel gestionPersonnel = new GestionPersonnel();
-		try 
-		{
-			String requete = "select * from ligue";
-			Statement instruction = connection.createStatement();
-			ResultSet ligues = instruction.executeQuery(requete);
-			while (ligues.next())
-				gestionPersonnel.addLigue(ligues.getInt(1), ligues.getString(2));
-		}
-		catch (SQLException e)
-		{
-			System.out.println(e);
-		}
-		return gestionPersonnel;
+	    GestionPersonnel gestionPersonnel = new GestionPersonnel();
+	    try 
+	    {
+	        Statement instruction = connection.createStatement();
+	        String requeteRoot = "SELECT * FROM employe WHERE num_ligue IS NULL";
+	        ResultSet rsRoot = instruction.executeQuery(requeteRoot);
+
+	        if (rsRoot.next()) 
+	        {
+	            gestionPersonnel.addRoot(
+	                rsRoot.getInt("num_employe"),
+	                rsRoot.getString("nom"),
+	                rsRoot.getString("password")
+	            );
+	        } 
+	        else 
+	        {
+	            gestionPersonnel.getRoot().setId(insert(gestionPersonnel.getRoot()));
+	        }
+	        
+	        String requete = "select * from ligue";
+	        ResultSet ligues = instruction.executeQuery(requete);
+	        while (ligues.next())
+	            gestionPersonnel.addLigue(ligues.getInt(1), ligues.getString(2));
+	    }
+	    catch (SQLException e)
+	    {
+	        System.out.println(e);
+	    }
+	    catch (SauvegardeImpossible e)
+	    {
+	        e.printStackTrace();
+	    }
+	    return gestionPersonnel;
 	}
 
 	@Override

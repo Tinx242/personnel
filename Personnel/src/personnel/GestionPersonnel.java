@@ -104,6 +104,16 @@ public class GestionPersonnel implements Serializable
 	    }
 	    return root;
 	}
+	
+	public Employe addRoot(int id, String nom, String password)
+	{
+	    try {
+	        root = new Employe(this, null, id, nom, "", "", password, null, null);
+	    } catch (DatesIncoherentesException e) {
+	        throw new AssertionError("Ne devrait jamais arriver car les dates sont null", e);
+	    }
+	    return root;
+	}
 
 	void remove(Ligue ligue)
 	{

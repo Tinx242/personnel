@@ -38,8 +38,29 @@ public class Employe implements Serializable, Comparable<Employe> {
     Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom,
             String mail, String password, LocalDate dateArrivee, LocalDate dateDepart, int id)
             throws DatesIncoherentesException, SauvegardeImpossible {
-        this(gestionPersonnel, ligue, nom, prenom, mail, password, dateArrivee, dateDepart);
+    	this.gestionPersonnel = gestionPersonnel;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.password = password;
+        this.mail = mail;
+        this.ligue = ligue;
+        this.dateArrivee = dateArrivee;
+        this.dateDepart = dateDepart;
         this.id = gestionPersonnel.insert(this);
+    }
+    
+    Employe(GestionPersonnel gestionPersonnel, Ligue ligue, int id, String nom, String prenom,
+            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart)
+            throws DatesIncoherentesException {
+    	this.gestionPersonnel = gestionPersonnel;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.password = password;
+        this.mail = mail;
+        this.ligue = ligue;
+        this.dateArrivee = dateArrivee;
+        this.dateDepart = dateDepart;
+        this.id = id;
     }
 
     /**
