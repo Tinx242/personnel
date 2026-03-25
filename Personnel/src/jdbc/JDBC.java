@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 import personnel.*;
 
@@ -56,13 +57,42 @@ public class JDBC implements Passerelle
 	        String requete = "select * from ligue";
 	        ResultSet ligues = instruction.executeQuery(requete);
 	        while (ligues.next())
-	            gestionPersonnel.addLigue(ligues.getInt(1), ligues.getString(2));
+	        {
+	            Ligue ligue = gestionPersonnel.addLigue(ligues.getInt("num_ligue"), ligues.getString("nom"));
+	            
+	            PreparedStatement stmtEmployes = connection.prepareStatement(
+	                "select e.* from employe e JOIN ligue l ON e.num_ligue = l.num_ligue WHERE e.num_ligue = ?"
+	            );
+	            stmtEmployes.setInt(1, ligue.getId());
+	            ResultSet employes = stmtEmployes.executeQuery();
+	            
+	            while (employes.next())
+	            {
+	                LocalDate dateArrivee = employes.getObject("date_arrivee", LocalDate.class);
+	                LocalDate dateDepart  = employes.getObject("date_depart",  LocalDate.class);
+	                
+	                ligue.addEmploye(
+	                    gestionPersonnel,
+	                    employes.getInt("num_employe"),
+	                    employes.getString("nom"),
+	                    employes.getString("prenom"),
+	                    employes.getString("mail"),
+	                    employes.getString("password"),
+	                    dateArrivee,
+	                    dateDepart
+	                );
+	            }
+	        }
 	    }
 	    catch (SQLException e)
 	    {
 	        System.out.println(e);
 	    }
 	    catch (SauvegardeImpossible e)
+	    {
+	        e.printStackTrace();
+	    }
+	    catch (DatesIncoherentesException e)
 	    {
 	        e.printStackTrace();
 	    }
