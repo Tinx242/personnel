@@ -163,7 +163,7 @@ public class JDBC implements Passerelle
 	    {
 	        PreparedStatement instruction;
 	        instruction = connection.prepareStatement(
-	            "insert into employe (nom, prenom, mail, password, date_arrivee, date_depart) values(?, ?, ?, ?, ?, ?)",
+	            "insert into employe (nom, prenom, mail, password, date_arrivee, date_depart, num_ligue) values(?, ?, ?, ?, ?, ?, ?)",
 	            Statement.RETURN_GENERATED_KEYS
 	        );
 	        instruction.setString(1, employe.getNom());
@@ -172,6 +172,11 @@ public class JDBC implements Passerelle
 	        instruction.setString(4, employe.getPassword());
 	        instruction.setObject(5, employe.getDateArrivee());
 	        instruction.setObject(6, employe.getDateDepart());
+	        if (employe.getLigue() != null)
+	            instruction.setInt(7, employe.getLigue().getId());
+	        else
+	            instruction.setNull(7, java.sql.Types.INTEGER);
+	        
 	        instruction.executeUpdate();
 	        ResultSet id = instruction.getGeneratedKeys();
 	        id.next();
