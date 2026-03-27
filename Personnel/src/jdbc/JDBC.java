@@ -70,6 +70,7 @@ public class JDBC implements Passerelle
 	            {
 	                LocalDate dateArrivee = employes.getObject("date_arrivee", LocalDate.class);
 	                LocalDate dateDepart  = employes.getObject("date_depart",  LocalDate.class);
+	                Employe employe = null;
 	                
 	                ligue.addEmploye(
 	                    gestionPersonnel,
@@ -81,6 +82,8 @@ public class JDBC implements Passerelle
 	                    dateArrivee,
 	                    dateDepart
 	                );
+	                if ("admin".equals(employes.getString("role")))
+	                    ligue.setAdministrateur(employe);
 	            }
 	        }
 	    }
