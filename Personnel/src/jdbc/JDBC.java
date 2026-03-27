@@ -48,10 +48,6 @@ public class JDBC implements Passerelle
 	                rsRoot.getString("nom"),
 	                rsRoot.getString("password")
 	            );
-	        } 
-	        else 
-	        {
-	        	gestionPersonnel.getRoot().setId(insert(gestionPersonnel.getRoot()));
 	        }
 	        
 	        String requete = "select * from ligue";
@@ -92,10 +88,6 @@ public class JDBC implements Passerelle
 	    catch (SQLException e)
 	    {
 	        System.out.println(e);
-	    }
-	    catch (SauvegardeImpossible e)
-	    {
-	        e.printStackTrace();
 	    }
 	    catch (DatesIncoherentesException e)
 	    {
