@@ -155,6 +155,9 @@ public class Ligue implements Serializable, Comparable<Ligue>
 	
 	public void remove() throws SauvegardeImpossible
 	{
+		for (Employe employe : new TreeSet<>(employes))
+	        employes.remove(employe);
+		
 		gestionPersonnel.remove(this);
 		gestionPersonnel.delete(this);
 	}

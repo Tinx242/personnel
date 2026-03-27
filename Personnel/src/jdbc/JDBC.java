@@ -158,11 +158,11 @@ public class JDBC implements Passerelle
 	{
 	    try
 	    {
-	        PreparedStatement instruction = connection.prepareStatement(
-	            "delete from ligue where num_ligue = ?"
+	    	PreparedStatement suppLigue = connection.prepareStatement(
+	                "delete FROM ligue WHERE num_ligue = ?"
 	        );
-	        instruction.setInt(1, ligue.getId());
-	        instruction.executeUpdate();
+	    	suppLigue.setInt(1, ligue.getId());
+	        suppLigue.executeUpdate();
 	    }
 	    catch (SQLException exception)
 	    {
