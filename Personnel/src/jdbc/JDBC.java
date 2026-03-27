@@ -70,9 +70,9 @@ public class JDBC implements Passerelle
 	            {
 	                LocalDate dateArrivee = employes.getObject("date_arrivee", LocalDate.class);
 	                LocalDate dateDepart  = employes.getObject("date_depart",  LocalDate.class);
-	                Employe employe = null;
 	                
-	                ligue.addEmploye(
+	        
+	                Employe employe = ligue.addEmploye(
 	                    gestionPersonnel,
 	                    employes.getInt("num_employe"),
 	                    employes.getString("nom"),
@@ -82,6 +82,8 @@ public class JDBC implements Passerelle
 	                    dateArrivee,
 	                    dateDepart
 	                );
+	                
+	             
 	                if ("admin".equals(employes.getString("role")))
 	                    ligue.setAdministrateur(employe);
 	            }
@@ -217,7 +219,8 @@ public class JDBC implements Passerelle
 	    {
 	        PreparedStatement instruction;
 	        instruction = connection.prepareStatement(
-	            "update employe set nom = ?, prenom = ?, mail = ?, password = ?, " + "date_arrivee = ?, date_depart = ? where num_employe = ?"
+	            "update employe set nom = ?, prenom = ?, mail = ?, password = ?, " +
+	            "date_arrivee = ?, date_depart = ? where num_employe = ?"
 	        );
 	        instruction.setString(1, employe.getNom());
 	        instruction.setString(2, employe.getPrenom());
