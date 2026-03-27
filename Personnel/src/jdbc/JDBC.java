@@ -61,7 +61,7 @@ public class JDBC implements Passerelle
 	            Ligue ligue = gestionPersonnel.addLigue(ligues.getInt("num_ligue"), ligues.getString("nom"));
 	            
 	            PreparedStatement stmtEmployes = connection.prepareStatement(
-	                "select e.* from employe e JOIN ligue l ON e.num_ligue = l.num_ligue WHERE e.num_ligue = ?"
+	                "SELECT * FROM employe WHERE num_ligue = ?"  
 	            );
 	            stmtEmployes.setInt(1, ligue.getId());
 	            ResultSet employes = stmtEmployes.executeQuery();
