@@ -121,11 +121,13 @@ public class Ligue implements Serializable, Comparable<Ligue>
 	 * @param password le password de l'employé.
 	 * @return l'employé créé. 
 	 * @throws DatesIncoherentesException 
+	 * @throws SauvegardeImpossible 
 	 */
 
-	public Employe addEmploye(String nom, String prenom, String mail, String password,LocalDate dateArrivee, LocalDate dateDepart) throws DatesIncoherentesException
+	public Employe addEmploye(String nom, String prenom, String mail, String password,LocalDate dateArrivee, LocalDate dateDepart) throws DatesIncoherentesException, SauvegardeImpossible
 	{
 		Employe employe = new Employe(this.gestionPersonnel, this, nom, prenom, mail, password, dateArrivee, dateDepart);
+		employe.setId(gestionPersonnel.insert(employe));
 		employes.add(employe);
 		return employe;
 	}
