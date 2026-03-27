@@ -98,8 +98,8 @@ public class GestionPersonnel implements Serializable
 	public Employe addRoot(String nom, String password)
 	{
 	    try {
-	        root = new Employe(this, null, nom, "", "", password, null, null, -1); 
-	    } catch (DatesIncoherentesException | SauvegardeImpossible e) {
+	        root = new Employe(this, null, nom, "", "", password, null, null);
+	    } catch (DatesIncoherentesException e) {
 	        throw new AssertionError("Ne devrait jamais arriver car les dates sont null", e);
 	    }
 	    return root;
@@ -130,6 +130,11 @@ public class GestionPersonnel implements Serializable
 		passerelle.update(ligue);
 	}
 	
+	void delete(Ligue ligue) throws SauvegardeImpossible
+	{
+	    passerelle.delete(ligue);
+	}
+	
 	int insert(Employe employe) throws SauvegardeImpossible
 	{
 	    return passerelle.insert(employe);
@@ -138,6 +143,11 @@ public class GestionPersonnel implements Serializable
 	void update(Employe employe) throws SauvegardeImpossible
 	{
 		passerelle.update(employe);
+	}
+	
+	void delete(Employe employe) throws SauvegardeImpossible
+	{
+	    passerelle.delete(employe);
 	}
 
 	/**

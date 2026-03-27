@@ -35,20 +35,6 @@ public class Employe implements Serializable, Comparable<Employe> {
         this.dateDepart = dateDepart;
     }
     
-    Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom,
-            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart, int id)
-            throws DatesIncoherentesException, SauvegardeImpossible {
-    	this.gestionPersonnel = gestionPersonnel;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.password = password;
-        this.mail = mail;
-        this.ligue = ligue;
-        this.dateArrivee = dateArrivee;
-        this.dateDepart = dateDepart;
-        this.id = gestionPersonnel.insert(this);
-    }
-    
     Employe(GestionPersonnel gestionPersonnel, Ligue ligue, int id, String nom, String prenom,
             String mail, String password, LocalDate dateArrivee, LocalDate dateDepart)
             throws DatesIncoherentesException {
@@ -213,15 +199,17 @@ public class Employe implements Serializable, Comparable<Employe> {
     /**
      * Supprime l'employé. Si celui-ci est administrateur, le root
      * récupère les droits d'administration sur sa ligue.
+     * @throws SauvegardeImpossible 
      * @throws ImpossibleDeSupprimerRoot Si l'employé est le root.
      */
-    public void remove() {
+    public void remove() throws SauvegardeImpossible {
         Employe root = gestionPersonnel.getRoot();
         if (this != root) {
             if (estAdmin(getLigue())) {
                 getLigue().setAdministrateur(root);
             }
             getLigue().remove(this);
+            gestionPersonnel.delete(this);
         } else {
             throw new ImpossibleDeSupprimerRoot();
         }

@@ -53,8 +53,32 @@ public class Serialization implements personnel.Passerelle
 	}
 	
 	@Override
+	public void delete(Ligue ligue) throws SauvegardeImpossible
+	{
+		
+	}
+	
+	@Override
+	public void update(Ligue ligue) throws SauvegardeImpossible
+	{
+		
+	}
+	
+	@Override
 	public int insert(Employe employe) throws SauvegardeImpossible
 	{
 	    return -1;
+	}
+	
+	@Override
+	public void delete(Employe employe) throws SauvegardeImpossible
+	{
+		
+	}
+	
+	@Override
+	public void update(Employe employe) throws SauvegardeImpossible
+	{
+		
 	}
 }
