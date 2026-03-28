@@ -71,7 +71,6 @@ public class JDBC implements Passerelle
 	                LocalDate dateArrivee = employes.getObject("date_arrivee", LocalDate.class);
 	                LocalDate dateDepart  = employes.getObject("date_depart",  LocalDate.class);
 	                
-	        
 	                Employe employe = ligue.addEmploye(
 	                    gestionPersonnel,
 	                    employes.getInt("num_employe"),
@@ -83,7 +82,6 @@ public class JDBC implements Passerelle
 	                    dateDepart
 	                );
 	                
-	             
 	                if ("admin".equals(employes.getString("role")))
 	                    ligue.setAdministrateur(employe);
 	            }
@@ -248,6 +246,37 @@ public class JDBC implements Passerelle
 	        );
 	        instruction.setInt(1, employe.getId());
 	        instruction.executeUpdate();
+	    }
+	    catch (SQLException exception)
+	    {
+	        exception.printStackTrace();
+	        throw new SauvegardeImpossible(exception);
+	    }
+	}
+
+	// NOUVEAU
+	@Override
+	public void updateAdministrateur(Ligue ligue) throws SauvegardeImpossible
+	{
+	    try
+	    {
+	       
+	        PreparedStatement resetRoles = connection.prepareStatement(
+	            "UPDATE employe SET role = NULL WHERE num_ligue = ?"
+	        );
+	        resetRoles.setInt(1, ligue.getId());
+	        resetRoles.executeUpdate();
+
+
+	        Employe admin = ligue.getAdministrateur();
+	        if (admin != null && admin.getLigue() != null && admin.getLigue().getId() == ligue.getId())
+	        {
+	            PreparedStatement setAdmin = connection.prepareStatement(
+	                "UPDATE employe SET role = 'admin' WHERE num_employe = ?"
+	            );
+	            setAdmin.setInt(1, admin.getId());
+	            setAdmin.executeUpdate();
+	        }
 	    }
 	    catch (SQLException exception)
 	    {
