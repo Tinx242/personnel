@@ -19,8 +19,26 @@ public class Employe implements Serializable, Comparable<Employe> {
     private LocalDate dateDepart;
     private int id;
 
+ // Nouvel employé : le mot de passe arrive EN CLAIR, on le hache.
     Employe(GestionPersonnel gestionPersonnel, Ligue ligue, String nom, String prenom,
-            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart) 
+            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart)
+            throws DatesIncoherentesException {
+        this.gestionPersonnel = gestionPersonnel;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.password = MotDePasse.hacher(password);
+        this.mail = mail;
+        this.ligue = ligue;
+
+        validerDates(dateArrivee, dateDepart);
+
+        this.dateArrivee = dateArrivee;
+        this.dateDepart = dateDepart;
+    }
+
+    // Chargement depuis la base : le mot de passe est DÉJÀ HACHÉ, on le stocke tel quel.
+    Employe(GestionPersonnel gestionPersonnel, Ligue ligue, int id, String nom, String prenom,
+            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart)
             throws DatesIncoherentesException {
         this.gestionPersonnel = gestionPersonnel;
         this.nom = nom;
@@ -28,17 +46,11 @@ public class Employe implements Serializable, Comparable<Employe> {
         this.password = password;
         this.mail = mail;
         this.ligue = ligue;
-        
+
         validerDates(dateArrivee, dateDepart);
-        
+
         this.dateArrivee = dateArrivee;
         this.dateDepart = dateDepart;
-    }
-    
-    Employe(GestionPersonnel gestionPersonnel, Ligue ligue, int id, String nom, String prenom,
-            String mail, String password, LocalDate dateArrivee, LocalDate dateDepart)
-            throws DatesIncoherentesException {
-    	this(gestionPersonnel, ligue, nom, prenom, mail, password, dateArrivee, dateDepart);
         this.id = id;
     }
 
@@ -131,8 +143,9 @@ public class Employe implements Serializable, Comparable<Employe> {
      * @return Vrai si le mot de passe est correct.
      */
     public boolean checkPassword(String password) {
-        return this.password.equals(password);
+        return MotDePasse.verifier(password, this.password);
     }
+
     
     public String getPassword() {
     	return password;
@@ -144,7 +157,7 @@ public class Employe implements Serializable, Comparable<Employe> {
      * @throws SauvegardeImpossible 
      */
     public void setPassword(String password) throws SauvegardeImpossible {
-        this.password = password;
+        this.password = MotDePasse.hacher(password);
         gestionPersonnel.update(this);
     }
 
