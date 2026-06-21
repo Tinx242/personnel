@@ -130,6 +130,11 @@ public class GestionPersonnel implements Serializable
 		passerelle.update(ligue);
 	}
 	
+	void updateAdministrateur(Ligue ligue) throws SauvegardeImpossible
+	{
+		passerelle.updateAdministrateur(ligue);
+	}
+	
 	void delete(Ligue ligue) throws SauvegardeImpossible
 	{
 	    passerelle.delete(ligue);
@@ -158,5 +163,29 @@ public class GestionPersonnel implements Serializable
 	public Employe getRoot()
 	{
 		return root;
+	}
+
+	/**
+	 * Authentifie un employé à partir d'un identifiant et d'un mot de passe
+	 * en clair. L'identifiant est soit le nom du root, soit le mail d'un
+	 * employé d'une ligue. Utilisé par l'écran de connexion Swing (la
+	 * version console ne vérifiait, elle, que le mot de passe du root).
+	 * @param identifiant le nom du root, ou le mail de l'employé.
+	 * @param motDePasse le mot de passe en clair saisi par l'utilisateur.
+	 * @return l'employé authentifié, ou null si l'identifiant ou le mot de
+	 * passe est incorrect.
+	 */
+	
+	public Employe authentifier(String identifiant, String motDePasse)
+	{
+		if (identifiant.equals(root.getNom()) && root.checkPassword(motDePasse))
+			return root;
+
+		for (Ligue ligue : ligues)
+			for (Employe employe : ligue.getEmployes())
+				if (identifiant.equals(employe.getMail()) && employe.checkPassword(motDePasse))
+					return employe;
+
+		return null;
 	}
 }

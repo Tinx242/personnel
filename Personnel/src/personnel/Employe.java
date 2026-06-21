@@ -84,6 +84,41 @@ public class Employe implements Serializable, Comparable<Employe> {
         return gestionPersonnel.getRoot() == this;
     }
 
+    // ===================== Droits d'accès =====================
+    // Ces trois méthodes centralisent "qui a le droit de faire quoi".
+    // Ce sont des règles métier (pas de l'affichage) : c'est pour ça
+    // qu'elles vivent ici, sur Employe, et pas dispersées dans les pages
+    // Swing. Toute page qui a besoin de savoir si un bouton doit être
+    // affiché interroge l'employé connecté via ces méthodes, plutôt que de
+    // refaire le test estRoot() / estAdmin() à chaque endroit.
+
+    /**
+     * Retourne vrai si l'employé peut créer/renommer/supprimer des ligues
+     * (uniquement le root).
+     */
+    public boolean peutGererLigues() {
+        return estRoot();
+    }
+
+    /**
+     * Retourne vrai si l'employé peut consulter le détail (la liste des
+     * employés) de la ligue passée en paramètre : le root peut consulter
+     * n'importe quelle ligue, un employé seulement la sienne.
+     */
+    public boolean peutVoir(Ligue ligue) {
+        return estRoot() || getLigue() == ligue;
+    }
+
+    /**
+     * Retourne vrai si l'employé peut gérer (ajouter/modifier/supprimer des
+     * employés, changer l'administrateur) la ligue passée en paramètre : le
+     * root peut gérer n'importe quelle ligue, un administrateur seulement
+     * la sienne, un simple employé aucune.
+     */
+    public boolean peutGerer(Ligue ligue) {
+        return estRoot() || estAdmin(ligue);
+    }
+
     /**
      * Retourne le nom de l'employé.
      * @return Le nom de l'employé.

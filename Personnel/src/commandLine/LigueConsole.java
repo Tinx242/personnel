@@ -218,11 +218,18 @@ public class LigueConsole
 				() -> new ArrayList<>(ligue.getEmployes()),
 				(employe) -> new Option("Définir " + employe.getNom() + " comme administrateur", "a", 
 						() -> 
-						{
-							ligue.setAdministrateur(employe);
-							System.out.println(employe.getNom() + " " + employe.getPrenom() + 
-									" est maintenant l'administrateur de " + ligue.getNom());
-						}
+				{
+				    try
+				    {
+				        ligue.setAdministrateur(employe);
+				        System.out.println(employe.getNom() + " " + employe.getPrenom() + 
+				                " est maintenant l'administrateur de " + ligue.getNom());
+				    }
+				    catch (SauvegardeImpossible e)
+				    {
+				        System.out.println("Impossible d'enregistrer le changement d'administrateur.");
+				    }
+				}
 				)
 		);
 	}			

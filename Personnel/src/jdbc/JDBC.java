@@ -91,6 +91,14 @@ public class JDBC implements Passerelle
 	    {
 	        e.printStackTrace();
 	    }
+	    catch (SauvegardeImpossible e)
+	    {
+	        // Se produit ici si la réécriture du rôle en base échoue pendant le
+	        // chargement initial. On affiche l'erreur mais on continue : les
+	        // données en mémoire restent correctes même si cette ré-écriture
+	        // (redondante, puisqu'on vient de lire cette même donnée) échoue.
+	        System.out.println(e);
+	    }
 	    return gestionPersonnel;
 	}
 
